@@ -1,0 +1,301 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Moodle Game</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var config = {
+    type: Phaser.AUTO,
+    width: 1280,
+    height: 600,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 300 },
+            debug: false
+        }
+    },
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
+
+var player;
+var stars;
+var platforms;
+var cursors;
+var score = 0;
+var gameOver = false;
+var scoreText;
+var vidas;
+
+var diamante;
+
+var game = new Phaser.Game(config);
+
+function preload ()
+{
+    this.load.image('fondo', 'assets/fondo.png');
+
+    this.load.image('bone1', 'assets//Tiles/bone1.png');
+    this.load.image('bone2', 'assets//Tiles/bone2.png');
+    this.load.image('bone3', 'assets//Tiles/bone3.png');
+
+    this.load.image('tree', 'assets//Objects/Tree.png');
+    this.load.image('sign', 'assets//Objects/Sign.png');
+    this.load.image('sign2', 'assets//Objects/ArrowSign.png');
+    this.load.image('bush', 'assets//Objects/bush.png');
+    this.load.image('bush2', 'assets//Objects/bush2.png');
+    this.load.image('tombstone', 'assets//Objects/TombStone.png');
+    this.load.image('tombstone2', 'assets//Objects/TombStone2.png');
+    this.load.image('skeleton', 'assets//Objects/Skeleton.png');
+    this.load.image('crate', 'assets//Objects/Crate.png');
+
+    this.load.image('ground', 'assets/platform.png');
+    this.load.image('ground1', 'assets/Tiles/ground1.png');
+    this.load.image('ground2', 'assets/Tiles/ground2.png');
+    this.load.image('ground3', 'assets/Tiles/ground3.png');
+    this.load.image('ground4', 'assets/Tiles/ground4.png');
+    this.load.image('ground5', 'assets/Tiles/ground5.png');
+    this.load.image('ground6', 'assets/Tiles/ground6.png');
+    this.load.image('ground7', 'assets/Tiles/ground7.png');
+    this.load.image('ground8', 'assets/Tiles/ground8.png');
+    this.load.image('ground9', 'assets/Tiles/ground9.png');
+    this.load.image('ground10', 'assets/Tiles/ground10.png');
+    this.load.image('ground11', 'assets/Tiles/ground11.png');
+    this.load.image('ground12', 'assets/Tiles/ground12.png');
+    this.load.image('ground14', 'assets/Tiles/ground14.png');
+    this.load.image('ground15', 'assets/Tiles/ground15.png');
+    this.load.image('ground16', 'assets/Tiles/ground16.png');
+
+    this.load.spritesheet('dude', 'assets/zombie5.png', { frameWidth: 55, frameHeight: 66 });
+    this.load.spritesheet('fire', 'assets/fire3.png', { frameWidth: 20, frameHeight: 57 });
+}
+
+function create ()
+{
+    //  Bbackground
+    this.add.image(640, 300, 'fondo').setScale(0.7);
+
+    //  Grupo de plataformas, contiene el suelos y los niveles flotantes.
+    platforms = this.physics.add.staticGroup();
+
+    //  Creacion del suelo y plataformas flotantes a escala de 0.5, tamaño original de 128px
+    platforms.create(32, 568, 'ground5').setScale(0.5).refreshBody();
+    platforms.create(32, 504, 'ground5').setScale(0.5).refreshBody();
+    platforms.create(32, 440, 'ground2').setScale(0.5).refreshBody();
+
+    platforms.create(96, 568, 'ground5').setScale(0.5).refreshBody();
+    platforms.create(96, 504, 'ground5').setScale(0.5).refreshBody();
+    platforms.create(96, 440, 'ground2').setScale(0.5).refreshBody();
+
+    platforms.create(160, 568, 'ground6').setScale(0.5).refreshBody();
+    platforms.create(160, 504, 'ground6').setScale(0.5).refreshBody();
+    platforms.create(160, 440, 'ground3').setScale(0.5).refreshBody();
+
+    platforms.create(288, 568, 'ground1').setScale(0.5).refreshBody();
+    platforms.create(352, 568, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(416, 568, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(480, 568, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(544, 568, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(608, 568, 'ground2').setScale(0.5).refreshBody();
+
+    platforms.create(1248, 568, 'ground5').setScale(0.5).refreshBody();
+    platforms.create(1184, 568, 'ground5').setScale(0.5).refreshBody();
+    platforms.create(1120, 568, 'ground4').setScale(0.5).refreshBody();
+
+    platforms.create(992, 568, 'ground3').setScale(0.5).refreshBody();
+    platforms.create(928, 568, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(864, 568, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(800, 568, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(736, 568, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(672, 568, 'ground2').setScale(0.5).refreshBody();
+
+    platforms.create(1248, 504, 'ground5').setScale(0.5).refreshBody();
+    platforms.create(1184, 504, 'ground5').setScale(0.5).refreshBody();
+    platforms.create(1120, 504, 'ground4').setScale(0.5).refreshBody();
+
+    platforms.create(1248, 440, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(1184, 440, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(1120, 440, 'ground1').setScale(0.5).refreshBody();
+
+    //  segundo nivel linea media
+    platforms.create(800, 435, 'ground16').setScale(0.5).refreshBody();
+    platforms.create(736, 435, 'ground15').setScale(0.5).refreshBody();
+    platforms.create(672, 435, 'ground15').setScale(0.5).refreshBody();
+    platforms.create(608, 435, 'ground15').setScale(0.5).refreshBody();
+    platforms.create(544, 435, 'ground15').setScale(0.5).refreshBody();
+    platforms.create(480, 435, 'ground14').setScale(0.5).refreshBody();
+
+    //  segundo nivel derecha
+    platforms.create(1248, 248, 'ground9').setScale(0.5).refreshBody();
+    platforms.create(1184, 248, 'ground9').setScale(0.5).refreshBody();
+    platforms.create(1120, 248, 'ground9').setScale(0.5).refreshBody();
+    platforms.create(1056, 248, 'ground9').setScale(0.5).refreshBody();
+    platforms.create(992, 248, 'ground8').setScale(0.5).refreshBody();
+    platforms.create(928, 248, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(864, 248, 'ground1').setScale(0.5).refreshBody();
+
+    platforms.create(1248, 184, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(1184, 184, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(1120, 184, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(1056, 184, 'ground2').setScale(0.5).refreshBody();
+    platforms.create(992, 184, 'ground1').setScale(0.5).refreshBody();
+
+    //  Nivel superior izquierda
+    platforms.create(32, 120, 'ground15').setScale(0.5).refreshBody();
+    platforms.create(96, 120, 'ground15').setScale(0.5).refreshBody();
+    platforms.create(160, 120, 'ground15').setScale(0.5).refreshBody();
+    platforms.create(224, 120, 'ground15').setScale(0.5).refreshBody();
+    platforms.create(288, 120, 'ground16').setScale(0.5).refreshBody();
+
+     //  Segundo nivel izquierda
+     platforms.create(288, 270, 'ground14').setScale(0.5).refreshBody();
+     platforms.create(352, 270, 'ground15').setScale(0.5).refreshBody();
+     platforms.create(416, 270, 'ground15').setScale(0.5).refreshBody();
+     platforms.create(480, 270, 'ground15').setScale(0.5).refreshBody();
+     platforms.create(544, 270, 'ground15').setScale(0.5).refreshBody();
+     platforms.create(608, 270, 'ground15').setScale(0.5).refreshBody();
+     platforms.create(672, 270, 'ground16').setScale(0.5).refreshBody();
+
+     // elementos decorativos
+     this.add.image(1000, 195, 'bone2').setScale(0.7);
+     this.add.image(1240, 550, 'bone1').setScale(0.7);
+     this.add.image(1140, 470, 'bone3').setScale(0.7);
+     this.add.image(100, 490, 'bone2').setScale(0.7);
+
+     this.add.image(650, 170, 'tree').setScale(0.6);
+     this.add.image(400, 204, 'sign2').setScale(0.8);
+     this.add.image(1240, 125, 'bush').setScale(0.9);
+     this.add.image(1100, 130, 'tombstone').setScale(0.9);
+     this.add.image(350, 514, 'skeleton').setScale(0.9);
+     this.add.image(950, 495, 'sign').setScale(0.9);
+     this.add.image(50, 366, 'crate').setScale(0.8);
+     this.add.image(180, 53, 'bush2').setScale(0.9);
+     this.add.image(180, 53, 'tombstone2').setScale(0.9);
+
+    // El jugador y su configuracion
+    player = this.physics.add.sprite(100, 300, 'dude');
+    
+
+    //  Propiedades fisicas del jugador. Le damos un pequelo rebote.
+    player.setBounce(0.2);
+
+    // para que colisone con los limites del juego
+    player.setCollideWorldBounds(true); 
+
+    //  Animacion del personaje, caminar a la izquierda y derecha
+    this.anims.create({
+        key: 'turn',
+        frames: [ { key: 'dude', frame: 4 } ],
+        frameRate: 20
+    });
+
+    this.anims.create({
+        key: 'left',
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 9 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    this.anims.create({
+        key: 'right',
+        frames: this.anims.generateFrameNumbers('dude', { start: 10, end: 19 }),
+        frameRate: 10,
+        repeat: -1
+    });
+
+    // animacion de un elemento "fire"
+    this.anims.create({
+        key: 'vida',
+        frames: this.anims.generateFrameNumbers('fire', { start: 0, end: 7 }),
+        frameRate: 25,
+        repeat: -1
+    });
+
+    //  Input Events
+    cursors = this.input.keyboard.createCursorKeys();
+
+    // Algunas llamas para recolectar, las posicionamos cada 70 pixeles del eje x
+     vidas = this.physics.add.group({
+        key: 'vida',
+        repeat: 18,
+        setXY: { x: 18, y: 0, stepX: 70 }
+    });
+
+    //  Le damos un fecto rebote ligeramente diferente a cada flama
+    vidas.children.iterate(function (child) {
+
+        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
+        child.anims.play('vida');
+    });
+
+    //  The score
+    scoreText = this.add.text(16, 16, 'Puntos: 0', { fontSize: '32px', fill: '#000' });
+
+    //  Hacemos que el jugador y las flamas colisionen con las plataformas
+    this.physics.add.collider(player, platforms);
+    this.physics.add.collider(vidas, platforms);
+
+    //  Si el jugador se superpone a una de las flamas, se manda llamar la funcion collectVida
+    this.physics.add.overlap(player, vidas, collectVida, null, this);
+}
+
+function update ()
+{
+    if (gameOver)
+    {
+        return;
+    }
+
+    if (cursors.left.isDown)
+    {
+        player.setVelocityX(-160);
+
+        player.anims.play('left', true);
+    }
+    else if (cursors.right.isDown)
+    {
+        player.setVelocityX(160);
+
+        player.anims.play('right', true);
+    }
+    else
+    {
+        player.setVelocityX(0);
+
+        player.anims.play('turn');
+    }
+
+    if (cursors.up.isDown && player.body.touching.down)
+    {
+        player.setVelocityY(-330);
+    }
+}
+
+
+function collectVida (player, vida)
+{
+    vida.disableBody(true, true);
+
+    //  Sumanos y actualizamos el puntaje del jugador
+    score += 5;
+    scoreText.setText('Puntos: ' + score);
+}
+
+</script>
+
+</body>
+</html>
